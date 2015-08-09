@@ -101,4 +101,6 @@ TODO: implement class to use instance of random (to allow seed, per instance)
 
 ## ?
 
+# TODO
 
+ * a way to create class with different implementation and be fix the use of common.instance to get the appropriate implementation ?!
