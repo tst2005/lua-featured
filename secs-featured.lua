@@ -13,7 +13,14 @@ function common.instance(class, ...)
 end
 common.__BY = "secs"
 
-pcall(function() require("i"):register("secs", common) end)
-local _M = {class = assert(common.class), instance = assert(common.instance), __BY = assert(common.__BY)}
---_M.common = common
+local _M = setmetatable({}, {
+	__call = function(_, ...)
+		return common.class(...)
+	end,
+	__index = common,
+	__newindex = function() error("read-only", 2) end,
+	__metatable = false,
+})
+
+--pcall(function() require("i"):register("secs", _M) end)
 return _M

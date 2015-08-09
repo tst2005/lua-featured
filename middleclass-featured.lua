@@ -31,7 +31,14 @@ if common.__BY == nil then
 	common.__BY = "middleclass"
 end
 
-pcall(function() require("classcommons2"):register("middleclass", common) end)
-local _M = {class = assert(common.class), instance = assert(common.instance), __BY = assert(common.__BY)}
---_M.common = common
+local _M = setmetatable({}, {
+	__call = function(_, ...)
+		return common.class(...)
+	end,
+	__index = common,
+	__newindex = function() error("read-only", 2) end,
+	__metatable = false,
+})
+
+--pcall(function() require("i"):register("middleclass", _M) end)
 return _M
