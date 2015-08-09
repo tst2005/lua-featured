@@ -11,31 +11,46 @@ Question to myself :
  * the featured API should be a proxy of the original module ? -> not mandatory but should be usefull
  * should I denied any other access than the featured API ? -> enforced limited API is not very good
 
+Sample of use
+-------------
+
+```lua
+local class       = require "featured" "class"
+local bit         = require "featured" "bit"
+local load        = require "featured" "load"
+```
+
 Featured APIs
 =============
 
 Class System
 ------------
 
+1. ClassCommons-like
+
 Inspired by ClassCommons. We have 2 functions, one to create class, one to create instance.
 
 ```lua
+local common = require "featured" "class"
 local common = require "foo-featured"
-local class = common.class
+
+local class    = common.class
 local instance = common.instance
 local c1 = class("one")
 local i1 = instance(c1)
 ```
 
+2. Featured API
+
+The table returned by require "feature" "class"  
 Some module only define class, it does not need instance.
 
 ```lua
-local class = require "foo-featured" -- callable module
-local c2 = class("one")
--- equal to
-local common = require "foo-featured"
-local c1 = common("one")
---
+local class = require "featured" "class"
+local class = require "foo-featured"
+
+local c1 = class("one")
+local i1 = c1:new()
 ```
 
 bitwise
@@ -45,8 +60,11 @@ bitwise
 bit.* -- Like bitop from luajit ?
 ```
 
+
 LPeg
 ----
+
+See the LPeg API.
 
 
 load/env
