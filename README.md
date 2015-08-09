@@ -66,6 +66,14 @@ LPeg
 
 See the LPeg API.
 
+Some implementation :
+ * v12   with Lua    : https://github.com/pygy/LuLPeg
+ * v12.2 with LuaJIT : https://github.com/sacek/LPegLJ
+
+See also :
+ * some sample to parser email/IP/json/ini/... https://github.com/spc476/LPeg-Parsers
+ * v10 https://github.com/sacek/Luajit-LPEG
+
 
 load/env
 --------
