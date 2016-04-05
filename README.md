@@ -66,6 +66,8 @@ LPeg
 
 See the LPeg API.
 
+got the version with `require "lpeg".version()` -> 0.10 / 0.12 / 0.12.2LJ
+
 Some implementation :
  * v12   with Lua    : https://github.com/pygy/LuLPeg
  * v12.2 with LuaJIT : https://github.com/sacek/LPegLJ
@@ -86,6 +88,8 @@ load/env
 .getfenv() ?
 .loadbytecode() ?
 ```
+
+see also http://lua-users.org/wiki/TheEssenceOfLoadingCode
 
 UTF8
 ----
@@ -112,3 +116,8 @@ TODO: implement class to use instance of random (to allow seed, per instance)
 # TODO
 
  * a way to create class with different implementation and be fix the use of common.instance to get the appropriate implementation ?!
+
+TOSEE
+=====
+
+ * https://github.com/umegaya/lua-aws/pull/15

@@ -1,9 +1,11 @@
 local _M = {}
 
 local featured_keys = {
-	["class-system"] = {"30log-featured", "secs-featured", "middleclass-featured"},
-	["lpeg"] = {"lpeg", "lulpeg"},
+	["class-system"] = {"30log-featured", "secs-featured", "middleclass-featured", "hump.class-featured", },
+	["lpeg"] = {"lpeg", "lulpeg", "lpeglj", },
+	["json"] = {"lunajson-featured", },
 }
+
 featured_keys.class = function()
 	return (require "i".need.any(featured_keys["class-system"]) or {}).class
 end
