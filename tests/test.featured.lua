@@ -35,7 +35,7 @@ local function testthis(imp)
 	print(common.__BY, i2)
 end
 
-for i,name in ipairs{"30log", "secs", "middleclass", "hump.class"} do
+for i,name in ipairs{"knife.base", "30log", "secs", "middleclass", "hump.class"} do
 	testthis(name.."-featured")
 end
 print("OK: All tests passed.")
