@@ -10,8 +10,11 @@ common.class = function(name, prototype, parent)
 	klass.new = klass.new or common.instance
 	return klass
 end
+
+local patch_index = require "meth-prot".patch_index
+
 common.instance = function(class, ...)
-        return class(...)
+        return patch_index(class(...))
 end
 common.__BY = "knife.base"
 common.new = common.class

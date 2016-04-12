@@ -7,9 +7,11 @@ function common.class(name, t, parent)
     t.__baseclass = parent
     return setmetatable(t, getmetatable(parent))
 end
+local patch_index = require "meth-prot".patch_index
 function common.instance(class, ...)
-    return class:new(...)
-    --return secs.new(class, ...)
+	--return patch_index(class:new(...))
+	return class:new(...)
+	--return secs.new(class, ...)
 end
 common.__BY = "secs"
 
