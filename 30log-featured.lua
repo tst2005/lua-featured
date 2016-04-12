@@ -10,6 +10,13 @@ end
 common.instance = function(class, ...)
         return class:new(...)
 end
+
+local patch_index = require "meth-prot".patch_index
+
+common.instance = function(class, ...)
+	local inst = class:new(...)
+	return patch_index(inst)
+end
 common.__BY = "30log"
 
 local _M = setmetatable({}, {
@@ -19,6 +26,8 @@ local _M = setmetatable({}, {
 	__index = common,
 	__newindex = function() error("read-only", 2) end,
 	__metatable = false,
+	__class = common.class,
+	__instance = common.instance,
 })
 
 --pcall(function() require("i"):register("30log", _M) end)

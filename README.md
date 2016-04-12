@@ -1,123 +1,60 @@
 
-How it works
-============
+Goal
+====
 
-You need `foo`
- * use the `foo.lua`, the original implementation of `foo` 
- * make the featured API in a `foo-feature.lua` file
- * use `require "foo-featured"` instead of `require "foo"`
+The goal of the project is :
+ * using existing implementation (stop making things from scratch)
+ * add a layer/wrapper/something to change what is not like we want without making change in the original implementation
 
-Question to myself :
- * the featured API should be a proxy of the original module ? -> not mandatory but should be usefull
- * should I denied any other access than the featured API ? -> enforced limited API is not very good
+The first target
+================
 
-Sample of use
--------------
+The first target is the class system.
+Lua does not have standard class system implementation.
+Everybody try to make his own.
+
+I'm trying to follow the ClassCommons behavior (except I avoid to modify the global env.).
+
+How lua-featured runs
+=====================
+
+For now, you must use a usual `require` call with the targeted module name siffxed by `-featured`.
+
+I choose to implement my layer/wrapper inside separated files.
 
 ```lua
-local class       = require "featured" "class"
-local bit         = require "featured" "bit"
-local load        = require "featured" "load"
+local middleclass   = require "middleclass-featured"
+local hump_class    = require "hump.class-featured"
+local _30log        = require "30log-featured"
+local kinfe_base    = require "knife.base-featured"
+local secs          = require "secs-featured"
 ```
 
-Featured APIs
-=============
+Common API
+==========
 
-Class System
-------------
+I trying to mainly follow the ClassCommons API.
+For now, The `featured API` is not frozen.
+I experiment a lot of things.
 
-1. ClassCommons-like
 
-Inspired by ClassCommons. We have 2 functions, one to create class, one to create instance.
+Class system comparison
+=======================
 
-```lua
-local common = require "featured" "class"
-local common = require "foo-featured"
+Class system behavior comparison (done with `$ lua tests/test.footprint.lua off`) :
 
-local class    = common.class
-local instance = common.instance
-local c1 = class("one")
-local i1 = instance(c1)
 ```
-
-2. Featured API
-
-The table returned by require "feature" "class"  
-Some module only define class, it does not need instance.
-
-```lua
-local class = require "featured" "class"
-local class = require "foo-featured"
-
-local c1 = class("one")
-local i1 = c1:new()
-```
-
-bitwise
--------
-
-```lua
-bit.* -- Like bitop from luajit ?
+middleclass | hump.class | 30log | knife.base | secs | test-names                               | comment
+no          | no         | no    | no         | no   | common_classes_and_instances_metatable   | Common metatable between instance of the same class (usualy no)
+no          | no         | no    | no         | yes  | common_classes_metatable                 | Common metatable between classes (usualy no)
+yes         | no         | yes   | no         | no   | custom_tostring_class                    | Custom tostring handler on class metatable
+no          | no         | no    | no         | no   | custom_tostring_from_nowhere             | Shadow tostring handler
+yes         | no         | yes   | no         | no   | custom_tostring_instance                 | Custom tostring handler on instance metatable
+no          | no         | no    | no         | no   | internal_cache_by_class_name             | [Feature] Internal cache: class name based cache (usualy no)
+yes         | yes        | yes   | yes        | yes  | method_protected_call                    | Protected call of method per instance : deny call of method of instance of class A with a instance of class B
+yes         | yes        | yes   | yes        | yes  | method_value_is_stable                   | Method value is stable (MUST be yes)
+yes         | no         | yes   | no         | no   | seems_custom_tostring_class              | Custom class tostring : meta(class).__tostring ?
+yes         | no         | yes   | no         | no   | seems_custom_tostring_instance           | Custom instance tostring: meta(instance).__tostring ?
 ```
 
 
-LPeg
-----
-
-See the LPeg API.
-
-got the version with `require "lpeg".version()` -> 0.10 / 0.12 / 0.12.2LJ
-
-Some implementation :
- * v12   with Lua    : https://github.com/pygy/LuLPeg
- * v12.2 with LuaJIT : https://github.com/sacek/LPegLJ
-
-See also :
- * some sample to parser email/IP/json/ini/... https://github.com/spc476/LPeg-Parsers
- * v10 https://github.com/sacek/Luajit-LPEG
-
-
-load/env
---------
-
-```lua
-.load() -- Lua5.2+ ?
-.loadstring() 
-.loadfile()
-.setfenv() ?
-.getfenv() ?
-.loadbytecode() ?
-```
-
-see also http://lua-users.org/wiki/TheEssenceOfLoadingCode
-
-UTF8
-----
-
-See Lua 5.3 API ?
-
-JSON
-----
-
-```lua
-json.encode()
-json.decode()
-json.null
-```
-
-RANDOM
-------
-
-TODO: implement class to use instance of random (to allow seed, per instance)
-
-
-## ?
-
-# TODO
-
- * a way to create class with different implementation and be fix the use of common.instance to get the appropriate implementation ?!
-
-TOSEE
-=====
-
- * https://github.com/umegaya/lua-aws/pull/15
