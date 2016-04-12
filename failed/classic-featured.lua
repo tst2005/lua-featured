@@ -2,7 +2,7 @@ local class = require "classic"
 
 local common = {}
 common.class = function(name, prototype, parent)
-	local klass = class():extend():new()
+	local klass = class:extend()
 	local parent = parent or class():extend()
 --nil,parent):extend(nil,prototype)
 	klass.init = (prototype or {}).init or (parent or {}).init
