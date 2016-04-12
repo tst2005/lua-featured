@@ -23,12 +23,63 @@ For now, you must use a usual `require` call with the targeted module name siffx
 I choose to implement my layer/wrapper inside separated files.
 
 ```lua
-local middleclass   = require "middleclass-featured"
-local hump_class    = require "hump.class-featured"
-local _30log        = require "30log-featured"
-local kinfe_base    = require "knife.base-featured"
-local secs          = require "secs-featured"
+local f_middleclass   = require "middleclass-featured"
+local f_hump_class    = require "hump.class-featured"
+local f_30log         = require "30log-featured"
+local f_knife_base    = require "knife.base-featured"
+local f_secs          = require "secs-featured"
 ```
+
+It is planned to be call over the `featured` module.
+```lua
+local f_middleclass   = require "featured" "middleclass"
+local f_hump_class    = require "featured" "hump.class"
+local f_30log         = require "featured" "30log"
+local f_knife_base    = require "featured" "knife.base"
+local f_secs          = require "featured" "secs"
+```
+
+Features
+========
+
+# Multiple implementation but always create a instance with the original implementation handler
+
+The featured module have a class-system wrapper to allow you to use multiple class-system implementation at a time.
+
+The main challenge was to be able to create instance from a defined class without knowing which what class-system implementation it was made.
+
+The solution chose : use `__instance` field in class metatable.
+
+```lua
+-- in foo.lua
+local impl = require "some_implementation"
+local c1 = impl.class("foo", {})
+return c1
+```
+
+```lua
+-- in i1.lua
+local instance = require "featured" "instance"
+local i1 = instance(c1)
+return i1
+```
+
+# a default minimal class-system
+
+The default implementation name is store in the `default.class` field with the value `featured.minimal.class`.
+
+```lua
+local class = require "featured" "default" "class"
+-- or
+local class = require "featured" "default.class"
+```
+
+The default implementation to use can be changed.
+```lua
+require "featured"["default.class"] = "another.class"
+```
+
+
 
 Common API
 ==========
