@@ -19,13 +19,23 @@ if onoff == "off" then onoff = false else onoff = true end
 
 require"meth-prot".activation(onoff)
 
-local tests = {"middleclass", "hump.class", "30log", "knife.base", "secs"}
+local tests = {"middleclass", "hump.class", "30log", "knife.base", "secs", "fua.class"}
+
+local use_rawget = {
+	["middleclass"] = false,
+	["hump.class"]=false,
+	["30log"]=true,
+	["knife.base"]=false,
+	["secs"]=false,
+	["classic"]=false,
+}
 
 local function testthis(imp)
 	local result = {}
 	local info = {}
 
-	local common = require(imp.."-featured")
+	--local common = require(imp.."-featured")
+	local common = require "featured"(imp) or require(imp.."-featured")
 	assert( type(common) == "table" )
 	assert( type(common.class) == "function" )
 	assert( type(common.instance) == "function" )
@@ -81,6 +91,8 @@ local function testthis(imp)
 	result.method_protected_call = not (b == i3)
 	info.method_protected_call = "Protected call of method per instance : deny call of method of instance of class A with a instance of class B"
 
+	result.need_rawget = use_rawget[imp]
+	info.need_rawget = "It needs rawget (result from external tests)"
 
 --	print(imp)
 --	print("", result.common_classes_metatable and "/!\\ yes" or "no",

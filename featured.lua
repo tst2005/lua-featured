@@ -1,30 +1,43 @@
-local _M = {}
 
-local featured_keys = {
-	["class-system"] = {"30log-featured", "secs-featured", "middleclass-featured", "hump.class-featured", },
-	["lpeg"] = {"lpeg", "lulpeg", "lpeglj", },
-	["json"] = {"lunajson-featured", },
+-- TODO:
+-- after the class system ...
+-- ... trying to support multiple implementation for :
+--	lpeg => "lpeg", "lulpeg", "lpeglj"
+--	json => "lunajson-featured"
+
+-- hardcoded internal aliases (read-only)
+local M = {
+	["class"]    = true, -- "featured.class"
+	["instance"] = true, -- "featured.instance"
+	["default"]  = true, -- "featured.default"
 }
 
-featured_keys.class = function()
-	return (require "i".need.any(featured_keys["class-system"]) or {}).class
-end
+-- if value is true, use the module name it self prefixed by "featured."
+-- if string, use the string as module name
+-- if nil or false, use the name suffixed by "-featured"
 
-featured_keys.instance = function()
-	return require "i".need.any(featured_keys["class-system"]).instance
-end
+-- read/write aliases
+local aliases = {
+	["default.class"]        = "featured.minimal.class", -- overwritable
+}
 
-setmetatable(_M, {
+-- The alias system is not recursive. You can not set an alias value to another alias.
+
+setmetatable(M, {
+	__index = aliases,
+	__newindex = aliases,
 	__call = function(_, name, ...)
-		assert(name)
-		local found = featured_keys[name]
-		assert(found)
-		if type(found) == "function" then
-			return found(name, ...)
-		else
-			return require "i".need.any(found)
+		name = M[name] == true and "featured."..name or M[name] or name .. "-featured" -- support module name alias
+		local m
+		local ok, _err = pcall(function() m = require(name) end)
+		if not ok then
+			return nil
 		end
+		return m
 	end,
+	__metatable = false,
 })
 
-return _M
+return M
+
+
