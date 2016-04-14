@@ -1,7 +1,7 @@
 local M = {}
-M._VERSION = ""
-M._URL = ""
-M._LICENSE = "MIT"
+--M._VERSION = "featured.class v0.1.0"
+--M._URL = "https://github.com/tst2005/lua-featured"
+--M._LICENSE = "MIT"
 
 local default_class_system_name = "default.class"
 
@@ -15,30 +15,50 @@ local function getmetafield(obj, name)
 	return ok and value
 end
 
+local function assertlevel(testvalue, errormsg, errorlvl)
+	if not testvalue then
+		error(errormsg, (errorlvl or 1)+1)
+	end
+	return testvalue
+end
+
 -- Use meta-info to know what ClassCommons-like handler use
 
--- simple version :
---M.class = function(name, prototype, parent) return (getmetafield(parent, "class") or function() end)(name, prototype, parent) end
---M.instance = function(class, ...) return (getmetafield(class, "instance") or function() end)(class, ...) end
-
--- more powerfull version :
 M.class = function(name, prototype, parent)
-	local handler = getmetafield(parent, "class")
-	if not handler then
-		handler = (require_featured(default_class_system_name) or {}).class
+	local handler
+	if parent then
+		handler = assertlevel(
+			getmetafield(parent, "class"),
+			"unable to get the class handler from parent class", 2
+		)
+	else
+		handler = assertlevel(
+			assertlevel(
+				require_featured(default_class_system_name),
+				"unable to get the featured default.class module", 2
+			).class,
+			"unable to get the class function of the featured default.class module", 2
+		)
 	end
-	if handler then
-		return handler(name, prototype, parent)
-	end
-end                  
+	return handler(name, prototype, parent)
+end
 M.instance = function(class, ...)
-	local handler = getmetafield(parent, "instance")
-	if not handler then
-		handler = (require_featured(default_class_system_name) or {}).instance
+	local handler
+	if parent then
+		handler = assertlevel(
+			getmetafield(parent, "instance"),
+			"unable to get the instance handler from class", 2
+		)
+	else
+		handler = assertlevel(
+			assertlevel(
+				require_featured(default_class_system_name),
+				"unable to get the featured default.class module", 2
+			).instance,
+			"unable to get the instance function of the featured default.class module", 2
+		)
 	end
-	if handler then
-		return handler(class, ...)
-	end
+	return handler(class, ...)
 end
 
 local M = setmetatable(M, {
