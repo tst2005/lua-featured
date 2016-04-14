@@ -18,7 +18,13 @@ local M = {
 
 -- read/write aliases
 local aliases = {
-	["default.class"]        = "featured.minimal.class", -- overwritable
+	["default.class"]	= "featured.minimal.class", -- overwritable
+	["middleclass"]		= "featured.compat.middleclass-featured",
+	["fua.class"]		= "featured.compat.fua.class-featured",
+	["knife.base"]		= "featured.compat.knife.base-featured",
+	["hump.class"]		= "featured.compat.hump.class-featured",
+	["30log"]		= "featured.compat.30log-featured",
+	["secs"]		= "featured.compat.secs-featured",
 }
 
 -- The alias system is not recursive. You can not set an alias value to another alias.
@@ -27,7 +33,7 @@ setmetatable(M, {
 	__index = aliases,
 	__newindex = aliases,
 	__call = function(_, name, ...)
-		name = M[name] == true and "featured."..name or M[name] or name .. "-featured" -- support module name alias
+		name = (M[name] == true and "featured."..name) or (M[name]) or (name .. "-featured") -- support module name alias
 		local m
 		local ok, _err = pcall(function() m = require(name) end)
 		if not ok then

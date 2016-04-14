@@ -2,9 +2,9 @@
 
 _=[[
 	for name in luajit lua5.3 lua-5.3 lua5.2 lua-5.2 lua5.1 lua-5.1 lua; do
-		: ${LUA:=$(command -v luajit)}
+		: ${LUA:=$(command -v "$name")}
 	done
-	LUA_PATH='./?.lua;./?/init.lua;./lib/?.lua;./lib/?/init.lua;;'
+	LUA_PATH='./?.lua;./?/init.lua;./lib/?.lua;./lib/?/init.lua;./thirdparty/?.lua;;'
 	exec "$LUA" "$0" "$@"
 	exit $?
 ]]
@@ -35,7 +35,7 @@ local function testthis(imp)
 	local info = {}
 
 	--local common = require(imp.."-featured")
-	local common = require "featured"(imp) or require(imp.."-featured")
+	local common = require "featured"(imp) -- or require(imp.."-featured")
 	assert( type(common) == "table" )
 	assert( type(common.class) == "function" )
 	assert( type(common.instance) == "function" )
