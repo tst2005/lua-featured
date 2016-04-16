@@ -5,7 +5,10 @@
 local class = require "featured" "class"
 local instance = require "featured" "instance"
 
-local object = class()
+local arg = arg or {...}
+local class = require "featured"(arg[1]).class
+
+local object = class("", {})
 
 do -- in 2 --
 
@@ -41,8 +44,18 @@ do -- in 3 --
 		end
 	}, A)
 
-	local D = class("", B, C)
-
+	local D = class("", {}, class("", {}, C, class("", {}, B)))
+--[[
+	A-foo
+	|\
+	| \___
+	|     \
+	B-foo |
+	|     C-foo
+	| ____/
+	|/
+	D (C|B) => foo => C-foo
+]]--
 	assert( instance(D).foo() == "class C" )
 end
 print("OK")
