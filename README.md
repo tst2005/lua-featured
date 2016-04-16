@@ -6,8 +6,8 @@ The goal of the project is :
  * using existing implementation (stop making things from scratch)
  * add a layer/wrapper/something to change what is not like we want without making change in the original implementation
 
-The first target
-================
+The first target : class system
+===============================
 
 The first target is the class system.
 Lua does not have standard class system implementation.
@@ -88,9 +88,23 @@ I trying to mainly follow the ClassCommons API.
 For now, The `featured API` is not frozen.
 I experiment a lot of things.
 
+Current approach
+----------------
 
-Class system comparison
-=======================
+I decide to follow the standard lua philosophy that use metatable to get custom handler.
+In case of class system the metatable fields are use to get the appropiated function to use to create class or instance.
+
+The featured module (for sample `featured/minimal/class.lua`)
+Return a module table that have class and instance function.
+
+When you create a class with the class function, the returned object must have both `__class` and `__instance` fields.
+The `__class` will be used to create a subclass.
+The `__instance` will be used to create a instance of this class.
+By this way we are able to return the class object, it will be use by another module without need of loading the original class system used to create it.
+
+
+Class system behavior comparison
+================================
 
 Class system behavior comparison (done with `$ lua tests/test.footprint.lua off`) :
 
