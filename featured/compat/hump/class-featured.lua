@@ -7,10 +7,10 @@ local new = assert(humpclass.new)
 local common = {}
 function common.class(name, prototype, parent)
 	local c = new{__includes = {prototype, parent}}
-	assert(c.new==nil)
-	function c:new(...) -- implement the class:new => new instance
-		return c(...)
-	end
+--	assert(c.new==nil)
+--	function c:new(...) -- implement the class:new => new instance
+--		return c(...)
+--	end
 	return c
 end
 function common.instance(class, ...)
