@@ -6,7 +6,7 @@
 --	json => "lunajson-featured"
 
 -- hardcoded internal aliases (read-only)
-local M = {
+local readonly = {
 	["class"]    = true, -- "featured.class"
 	["instance"] = true, -- "featured.instance"
 	["default"]  = true, -- "featured.default"
@@ -27,10 +27,18 @@ local aliases = {
 	["secs"]		= "featured.compat.secs-featured",
 }
 
--- The alias system is not recursive. You can not set an alias value to another alias.
+local function mk_dualindex(i1, i2)
+	return function(_t, k)
+		if i1[k] ~= nil then
+			return i1[k]
+		end
+		return i2[k]
+	end
+end
 
-setmetatable(M, {
-	__index = aliases,
+-- The alias system is not recursive. You can not set an alias value to another alias.
+local M = setmetatable({}, {
+	__index = mk_dualindex(readonly, aliases),
 	__newindex = aliases,
 	__call = function(_, name, ...)
 		name = (M[name] == true and "featured."..name) or (M[name]) or (name .. "-featured") -- support module name alias
